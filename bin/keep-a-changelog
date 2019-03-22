@@ -49,6 +49,7 @@ $application->addCommands([
     new EntryCommand('entry:removed'),
     new EntryCommand('entry:fixed'),
     new NewChangelogCommand('new'),
+    new PruneCommand('prune'),
     new ReadyCommand('ready'),
     new ReleaseCommand('release'),
     new TaggerCommand('tag'),
