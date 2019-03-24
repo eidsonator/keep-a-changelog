@@ -143,16 +143,17 @@ EOH;
             $this->preparePullRequestLink(
                 (int) $pr,
                 $input->getOption('package'),
-                $this->getProvider($config)
+                $this->getProvider($config),
+                $this->getEnterpriseUrl($config)
             ),
             $entry
         );
     }
 
-    private function preparePullRequestLink(int $pr, ?string $package, ProviderInterface $provider) : string
+    private function preparePullRequestLink(int $pr, ?string $package, ProviderInterface $provider, ?string $enterpriseUrl) : string
     {
         if (null !== $package) {
-            $link = $this->generatePullRequestLink($pr, $package, $provider);
+            $link = $this->generatePullRequestLink($pr, $package, $provider, $enterpriseUrl);
 
             if (null === $link) {
                 throw Exception\InvalidPullRequestLinkException::forPackage($package, $pr);
@@ -161,14 +162,14 @@ EOH;
             return $link;
         }
 
-        $link = $this->generatePullRequestLink($pr, (new ComposerPackage())->getName(realpath(getcwd())), $provider);
+        $link = $this->generatePullRequestLink($pr, (new ComposerPackage())->getName(realpath(getcwd())), $provider, $enterpriseUrl);
 
         if (null !== $link) {
             return $link;
         }
 
         foreach ($this->getPackageNames($provider) as $package) {
-            $link = $this->generatePullRequestLink($pr, $package, $provider);
+            $link = $this->generatePullRequestLink($pr, $package, $provider, $enterpriseUrl);
 
             if (null !== $link) {
                 return $link;
@@ -206,13 +207,13 @@ EOH;
         return $packages;
     }
 
-    private function generatePullRequestLink(int $pr, string $package, ProviderInterface $provider) : ?string
+    private function generatePullRequestLink(int $pr, string $package, ProviderInterface $provider, ?string $enterpriseUrl) : ?string
     {
         if (! preg_match('#^[a-z0-9]+[a-z0-9_-]*/[a-z0-9]+[a-z0-9_-]*$#i', $package)) {
             throw Exception\InvalidPackageNameException::forPackage($package);
         }
 
-        $link = $provider->generatePullRequestLink($package, $pr);
+        $link = $provider->generatePullRequestLink($package, $pr, $enterpriseUrl);
 
         return $this->probeLink($link) ? $link : null;
     }

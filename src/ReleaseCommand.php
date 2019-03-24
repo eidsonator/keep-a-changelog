@@ -97,6 +97,12 @@ EOH;
             InputOption::VALUE_NONE,
             'Use the global config file'
         );
+        $this->addOption(
+            'enterpriseUrl',
+            'e',
+            InputOption::VALUE_OPTIONAL,
+            'Use a local github/gitlab instance'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) : int
@@ -150,12 +156,14 @@ EOH;
         ));
 
         $provider = $this->getProvider($config);
+        $enterpriseUrl = $this->getEnterpriseUrl($config);
         $release = $provider->createRelease(
             $package,
             $releaseName,
             $tagName,
             $changelog,
-            $token
+            $token,
+            $enterpriseUrl
         );
         if (! $release) {
             $output->writeln('<error>Error creating release!</error>');

@@ -8,7 +8,6 @@
 declare(strict_types=1);
 
 namespace Phly\KeepAChangelog;
-
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -27,7 +26,8 @@ trait GetConfigValuesTrait
     private function prepareConfig(
         InputInterface $input,
         string $tokenOptionName = 'token',
-        string $providerOptionName = 'provider'
+        string $providerOptionName = 'provider',
+        string $enterpriseUrlOptionName = 'enterpriseUrl'
     ) : Config {
         $config = $this->getConfig($input);
 
@@ -36,6 +36,9 @@ trait GetConfigValuesTrait
 
         $provider = $input->getOption($providerOptionName);
         $config = $provider ? $config->withProvider($provider) : $config;
+
+        $enterpriseUrl = $input->getOption($enterpriseUrlOptionName);
+        $config = $enterpriseUrl ? $config->withEnterpriseUrl($enterpriseUrl) : $config;
 
         return $config;
     }
@@ -81,4 +84,16 @@ trait GetConfigValuesTrait
 
         return null;
     }
+
+    private function getEnterpriseUrl(Config $config)
+    {
+        $enterpriseUrl = $config->enterpriseUrl();
+
+        if ($enterpriseUrl) {
+            return trim($enterpriseUrl);
+        }
+
+        return null;
+    }
+
 }

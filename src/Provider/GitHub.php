@@ -13,6 +13,8 @@ use Github\Client as GitHubClient;
 
 class GitHub implements ProviderInterface
 {
+    private $url;
+
     /**
      * @inheritDoc
      */
@@ -21,10 +23,12 @@ class GitHub implements ProviderInterface
         string $releaseName,
         string $tagName,
         string $changelog,
-        string $token
+        string $token,
+        string $enterpriseUrl
     ) : ?string {
+        $this->url = $enterpriseUrl ?: 'https://github.com';
         [$org, $repo] = explode('/', $package);
-        $client = new GitHubClient();
+        $client = new GitHubClient(null, null, $this->url);
         $client->authenticate($token, GitHubClient::AUTH_HTTP_TOKEN);
         $release = $client->api('repo')->releases()->create(
             $org,
@@ -46,14 +50,16 @@ class GitHub implements ProviderInterface
      */
     public function getRepositoryUrlRegex() : string
     {
-        return '(github.com[:/](.*?)\.git)';
+        $enterpriseUrl = preg_replace('/http[s]?:\/\//', '', $this->url);
+
+        return sprintf ('(%s[:/](.*?)\.git)', $enterpriseUrl);
     }
 
     /**
      * @inheritDoc
      */
-    public function generatePullRequestLink(string $package, int $pr) : string
+    public function generatePullRequestLink(string $package, int $pr, ?string $enterpriseUrl) : string
     {
-        return sprintf('https://github.com/%s/pull/%d', $package, $pr);
+        return sprintf('%s/%s/pull/%d', $enterpriseUrl ?: 'https://github.com', $package, $pr);
     }
 }

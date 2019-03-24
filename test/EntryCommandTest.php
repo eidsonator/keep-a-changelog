@@ -94,6 +94,7 @@ class EntryCommandTest extends TestCase
         $pr = 1;
         $package = 'not-a-valid-package-name';
         $provider = '';
+        $enterpriseUrl = '';
 
         $this->input->getArgument('entry')->willReturn($entry);
         $this->input->getOption('pr')->willReturn($pr);
@@ -102,6 +103,7 @@ class EntryCommandTest extends TestCase
         $this->input->hasOption('token')->willReturn(false);
         $this->input->getOption('token')->shouldNotBeCalled();
         $this->input->getOption('provider')->willReturn($provider);
+        $this->input->getOption('enterpriseUrl')->willReturn($enterpriseUrl);
 
         $command = new EntryCommand('entry:added');
         $this->injectCommandConfigPaths($command);
@@ -116,6 +118,7 @@ class EntryCommandTest extends TestCase
         $pr = 9999999999;
         $package = 'phly/keep-a-changelog';
         $provider = '';
+        $enterpriseUrl = '';
 
         $this->input->getArgument('entry')->willReturn($entry);
         $this->input->getOption('pr')->willReturn($pr);
@@ -124,6 +127,7 @@ class EntryCommandTest extends TestCase
         $this->input->hasOption('token')->willReturn(false);
         $this->input->getOption('token')->shouldNotBeCalled();
         $this->input->getOption('provider')->willReturn($provider);
+        $this->input->getOption('enterpriseUrl')->willReturn($enterpriseUrl);
 
         $command = new EntryCommand('entry:added');
         $this->injectCommandConfigPaths($command);
@@ -138,6 +142,7 @@ class EntryCommandTest extends TestCase
         $pr = 1;
         $package = 'phly/keep-a-changelog';
         $provider = '';
+        $enterpriseUrl = '';
 
         $this->input->getArgument('entry')->willReturn($entry);
         $this->input->getOption('pr')->willReturn($pr);
@@ -146,6 +151,7 @@ class EntryCommandTest extends TestCase
         $this->input->hasOption('token')->willReturn(false);
         $this->input->getOption('token')->shouldNotBeCalled();
         $this->input->getOption('provider')->willReturn($provider);
+        $this->input->getOption('enterpriseUrl')->willReturn($enterpriseUrl);
 
         $command = new EntryCommand('entry:added');
         $this->injectCommandConfigPaths($command);
@@ -164,6 +170,7 @@ class EntryCommandTest extends TestCase
         $pr = 1;
         $package = 'phly/keep-a-changelog';
         $provider = 'gitlab';
+        $enterpriseUrl = '';
 
         $this->input->getArgument('entry')->willReturn($entry);
         $this->input->getOption('pr')->willReturn($pr);
@@ -172,6 +179,7 @@ class EntryCommandTest extends TestCase
         $this->input->hasOption('token')->willReturn(false);
         $this->input->getOption('token')->shouldNotBeCalled();
         $this->input->getOption('provider')->willReturn($provider);
+        $this->input->getOption('enterpriseUrl')->willReturn($enterpriseUrl);
 
         $command = new EntryCommand('entry:added');
         $this->injectCommandConfigPaths($command);

@@ -25,15 +25,19 @@ class Config
     /** @var string */
     private $token;
 
+    /** @var  string */
+    private $enterpriseUrl;
+
     /**
      * @throws Exception\InvalidProviderException if the $provider is unknown.
      */
-    public function __construct(string $token = '', string $provider = self::PROVIDER_GITHUB)
+    public function __construct(string $token = '', string $provider = self::PROVIDER_GITHUB, string $enterpriseUrl = '')
     {
         $this->token = $token;
 
         $this->validateProvider($provider);
         $this->provider = $provider;
+        $this->enterpriseUrl = $enterpriseUrl;
     }
 
     public function provider() : string
@@ -44,6 +48,10 @@ class Config
     public function token() : string
     {
         return $this->token;
+    }
+
+    public function enterpriseUrl() : string {
+        return $this->enterpriseUrl;
     }
 
     /**
@@ -61,6 +69,13 @@ class Config
     {
         $config = clone $this;
         $config->token = $token;
+        return $config;
+    }
+
+    public function withEnterpriseUrl(string $enterpriseUrl) : self
+    {
+        $config = clone $this;
+        $config->enterpriseUrl = $enterpriseUrl;
         return $config;
     }
 

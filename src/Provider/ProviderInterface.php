@@ -16,10 +16,11 @@ interface ProviderInterface
         string $releaseName,
         string $tagName,
         string $changelog,
-        string $token
+        string $token,
+        string $enterpriseUrl
     ) : ?string;
 
     public function getRepositoryUrlRegex() : string;
 
-    public function generatePullRequestLink(string $package, int $pr) : string;
+    public function generatePullRequestLink(string $package, int $pr, ?string $enterpriseUrl) : string;
 }

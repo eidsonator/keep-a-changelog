@@ -13,6 +13,7 @@ use Gitlab\Client as GitLabClient;
 
 class GitLab implements ProviderInterface
 {
+    private $url;
     /**
      * @inheritDoc
      */
@@ -21,9 +22,11 @@ class GitLab implements ProviderInterface
         string $releaseName,
         string $tagName,
         string $changelog,
-        string $token
+        string $token,
+        string $enterpriseUrl
     ) : ?string {
-        $client = GitLabClient::create('https://gitlab.com');
+        $this->url = $enterpriseUrl ?? 'https://gitlab.com';
+        $client = GitLabClient::create($this->url);
         $client->authenticate($token, GitLabClient::AUTH_HTTP_TOKEN);
         $release = $client->api('repositories')->createRelease($package, $tagName, $changelog);
 
@@ -35,14 +38,15 @@ class GitLab implements ProviderInterface
      */
     public function getRepositoryUrlRegex() : string
     {
-        return '(gitlab.com[:/](.*?)\.git)';
+        $enterpriseUrl = preg_replace('/http[s]?:\/\//', '', $this->url);
+        return sprintf('(%s[:/](.*?)\.git)', $enterpriseUrl);
     }
 
     /**
      * @inheritDoc
      */
-    public function generatePullRequestLink(string $package, int $pr) : string
+    public function generatePullRequestLink(string $package, int $pr, ?string $enterpriseUrl) : string
     {
-        return sprintf('https://gitlab.com/%s/merge_requests/%d', $package, $pr);
+        return sprintf('%s/%s/merge_requests/%d', $enterpriseUrl ?: 'https://gitlab.com', $package, $pr);
     }
 }
