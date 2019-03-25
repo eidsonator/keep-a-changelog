@@ -12,7 +12,7 @@ namespace Phly\KeepAChangelog;
 class ChangelogBump
 {
     // @codingStandardsIgnoreStart
-    private const CHANGELOG_LINE_REGEX = '/^\#\# (?<version>\d+\.\d+\.\d+(?:(?:alpha|beta|rc|dev|a|b)\d+)?) - (?:TBD|\d{4}-\d{2}-\d{2})$/m';
+    private const CHANGELOG_LINE_REGEX = '/^\#\# (?<version>\d+\.\d+\.\d+(?:(?:alpha|beta|rc|dev|a|b)\d+)?) - (?:\d{4}-\d{2}-\d{2})$/m';
     // @codingStandardsIgnoreEnd
 
     private const TEMPLATE = <<< 'EOT'
@@ -101,13 +101,24 @@ EOT;
      */
     public function updateChangelog(string $version)
     {
-        $changelog = sprintf(self::TEMPLATE, $version);
         $contents = file_get_contents($this->changelogFile);
-        $contents = preg_replace(
-            "/^(\# Changelog\n\n.*?)(\n\n\#\# )/s",
-            '$1' .  $changelog . '## ',
-            $contents
-        );
+
+        $tbdPattern = '/\#\#.*- TBD/';
+        preg_match($tbdPattern, $contents, $matches);
+        var_dump($matches);
+        if ($matches) {
+            $contents = preg_replace($tbdPattern, sprintf('## %s - TBD', $version), $contents);
+        } else {
+            $changelog = sprintf(self::TEMPLATE, $version);
+            $contents = preg_replace(
+                "/^(\# Changelog\n\n.*?)(\n\n\#\# )/s",
+                '$1' .  $changelog . '## ',
+                $contents
+            );
+        }
+
+
+
         file_put_contents($this->changelogFile, $contents);
     }
 
