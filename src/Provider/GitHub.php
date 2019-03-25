@@ -24,7 +24,7 @@ class GitHub implements ProviderInterface
         string $tagName,
         string $changelog,
         string $token,
-        string $enterpriseUrl
+        ?string $enterpriseUrl
     ) : ?string {
         $this->url = $enterpriseUrl ?: 'https://github.com';
         [$org, $repo] = explode('/', $package);

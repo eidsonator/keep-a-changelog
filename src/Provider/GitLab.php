@@ -23,7 +23,7 @@ class GitLab implements ProviderInterface
         string $tagName,
         string $changelog,
         string $token,
-        string $enterpriseUrl
+        ?string $enterpriseUrl
     ) : ?string {
         $this->url = $enterpriseUrl ?? 'https://gitlab.com';
         $client = GitLabClient::create($this->url);

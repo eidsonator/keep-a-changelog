@@ -17,7 +17,7 @@ interface ProviderInterface
         string $tagName,
         string $changelog,
         string $token,
-        string $enterpriseUrl
+        ?string $enterpriseUrl
     ) : ?string;
 
     public function getRepositoryUrlRegex() : string;
