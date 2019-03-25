@@ -89,6 +89,11 @@ EOT;
         return sprintf('%d.0.0', $major);
     }
 
+    public function bumpUnreleased() : string
+    {
+        return 'unreleased';
+    }
+
     /**
      * Update the CHANGELOG with the new version information.
      *

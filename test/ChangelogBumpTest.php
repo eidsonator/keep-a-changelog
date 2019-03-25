@@ -200,4 +200,9 @@ EOC;
         $this->bumper->updateChangelog('3.2.1');
         $this->assertEquals($expected, file_get_contents($this->tempFile));
     }
+
+    public function testBumpsUnreleased()
+    {
+        $this->assertEquals('unreleased', $this->bumper->bumpUnreleased());
+    }
 }
