@@ -27,7 +27,8 @@ trait GetConfigValuesTrait
         InputInterface $input,
         string $tokenOptionName = 'token',
         string $providerOptionName = 'provider',
-        string $enterpriseUrlOptionName = 'enterpriseUrl'
+        string $enterpriseUrlOptionName = 'enterpriseUrl',
+        string $packageOptionName = 'package'
     ) : Config {
         $config = $this->getConfig($input);
 
@@ -39,6 +40,9 @@ trait GetConfigValuesTrait
 
         $enterpriseUrl = $input->getOption($enterpriseUrlOptionName);
         $config = $enterpriseUrl ? $config->withEnterpriseUrl($enterpriseUrl) : $config;
+
+        $package = $input->getOption($packageOptionName);
+        $config = $package ? $config->withpackage($package) : $config;
 
         return $config;
     }
@@ -91,6 +95,17 @@ trait GetConfigValuesTrait
 
         if ($enterpriseUrl) {
             return trim($enterpriseUrl);
+        }
+
+        return null;
+    }
+
+    private function getPackage(Config $config)
+    {
+        $package = $config->package();
+
+        if ($package) {
+            return trim($package);
         }
 
         return null;

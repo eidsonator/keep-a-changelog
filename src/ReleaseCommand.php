@@ -51,14 +51,16 @@ EOH;
     {
         $this->setDescription('Create a new release using the relevant changelog entry.');
         $this->setHelp(self::HELP);
-        $this->addArgument(
+        $this->addOption(
             'package',
-            InputArgument::REQUIRED,
+            'p',
+            InputOption::VALUE_REQUIRED,
             'Package to release; must be in org/repo format, and match the github repository name'
         );
-        $this->addArgument(
-            'version',
-            InputArgument::REQUIRED,
+        $this->addOption(
+            'release-version',
+            's',
+            InputOption::VALUE_REQUIRED,
             'Version to tag'
         );
         $this->addOption(
@@ -107,25 +109,27 @@ EOH;
 
     protected function execute(InputInterface $input, OutputInterface $output) : int
     {
-        $version = $input->getArgument('version');
-        $tagName = $input->getOption('tagname') ?: $version;
-
-        $this->verifyTagExists($tagName);
-
-        $config  = $this->prepareConfig($input);
-        $package = $input->getArgument('package');
-
-        $token = $this->getToken($config, $input, $output);
-        if (! $token) {
-            return 1;
-        }
-
         $changelogFile = $this->getChangelogFile($input);
         if (! is_readable($changelogFile)) {
             throw Exception\ChangelogFileNotFoundException::at($changelogFile);
         }
 
         $output->writeln('<info>Preparing changelog for release</info>');
+
+
+        $config  = $this->prepareConfig($input);
+        $package = $this->getPackage($config);
+
+        $version = $input->getOption('release-version') ?: (new ChangelogBump($changelogFile))->findLatestVersion();
+        $tagName = $input->getOption('tagname') ?: $version;
+
+        $this->verifyTagExists($tagName);
+
+        $token = $this->getToken($config, $input, $output);
+        if (! $token) {
+            return 1;
+        }
+
 
         $parser = new ChangelogParser();
         $changelog = $parser->findChangelogForVersion(

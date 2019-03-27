@@ -43,7 +43,7 @@ EOH;
     {
         $this->setDescription('Create a new tag, using the relevant changelog entry.');
         $this->setHelp(self::HELP);
-        $this->addArgument('version', InputArgument::REQUIRED, 'Version to tag');
+        $this->addOption('release-version', 's', InputOption::VALUE_REQUIRED, 'Version to tag');
         $this->addOption(
             'package',
             'p',
@@ -62,14 +62,16 @@ EOH;
     {
         $cwd = realpath(getcwd());
 
-        $version = $input->getArgument('version');
-        $package = $input->getOption('package') ?: basename($cwd);
-        $tagName = $input->getOption('tagname') ?: $version;
-
         $changelogFile = $this->getChangelogFile($input);
         if (! is_readable($changelogFile)) {
             throw Exception\ChangelogFileNotFoundException::at($changelogFile);
         }
+
+        $version = $input->getOption('release-version') ?: (new ChangelogBump($changelogFile))->findLatestVersion();
+        $package = $input->getOption('package') ?: basename($cwd);
+        $tagName = $input->getOption('tagname') ?: $version;
+
+
 
         $parser = new ChangelogParser();
         $changelog = $parser->findChangelogForVersion(
